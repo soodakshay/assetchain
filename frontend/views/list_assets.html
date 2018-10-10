@@ -1,0 +1,502 @@
+{% extends "./layout.html" %}
+
+{% block css %}
+
+<!--<link rel="stylesheet" type="text/css" href="../../assets/global/plugins/bootstrap-datepicker/css/datepicker3.css"/>-->
+
+<link rel="stylesheet" type="text/css" href="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css"/>
+
+
+<style>
+
+    .view  td{
+        text-align: left !important
+    }
+    .view th{
+        text-align: left !important
+    }
+    .list th,td{
+        text-align: center !important
+    }
+
+</style>
+{%endblock%}
+
+
+{% block content %}
+<div class="page-content">
+    <div class="row">
+        {% include "./flashMessage.html" %}<!--include file for flash messages -->
+        <div class="col-md-12">
+            <!-- BEGIN BORDERED TABLE PORTLET-->
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-cube"></i>Manage Assets
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="row"><br/></div>  
+
+                    <!--search panel on the top --start---->
+                    <form id="filter_form">
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-5 form-group">
+                                    <label class="control-label"><b>Search By </b></label>
+                                    <input id="search_by" class="form-control searchList" type="text" name="search_by" autocomplete="off" placeholder="Name or serial number or category" >                
+                                </div>
+                                <div class="col-md-3 form-group">
+                                    <label class="control-label"><b>Sort By</b></label>
+                                    <select id="field_type" class="form-control" name="field_type" >
+                                        <option value="">--Select--</option>
+                                        <option value="0">Name</option>                                        
+                                    </select>	
+                                </div>
+                                <div id="sort_type_error" class="col-md-3 form-group" >
+                                    <label class="control-label"><b>Sort Type</b></label>
+                                    <select id="sort_type" class="form-control" name="sort_type"  >
+                                        <option value="">--Select--</option>
+                                        <option value="1">Ascending</option>
+                                        <option value="-1">Descending</option>
+                                    </select>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 form-group text-center">
+                                <button id="filter" class="btn btn-primary btn-danger btn-sm" type="button" title="Filter" >Filter</button>
+                                <button id = "reset" class="btn btn-primary btn-primary btn-sm clear_form" type="button" title="Reset">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!--search panel on the top --ends---->
+
+                    <div id="ajaxResponce"> <!-- To show Ajax Responce -->	
+                        {%include "asset_list_table.html" %}
+
+                    </div>
+
+
+
+                </div>
+
+            </div>
+            <!-- END BORDERED TABLE PORTLET-->
+            <!--start jpage pagination container -->
+<!--            <div class = "row pagination-section"></div>-->
+
+        </div>
+
+    </div>
+</div>
+
+<!-- View the data in modal-->
+<div id="long" class="modal fade modal-scroll" tabindex="-1" data-replace="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Asset Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="scroller" style="height:300px" data-always-visible="1" data-rail-visible1="1">
+                    <table class="table table-bordered table-hover view">
+                        <tbody id="content">
+                            <tr>
+                                <th>Name:</th>
+                                <td id="v_name"></td>
+                            </tr>
+                            <tr>
+                                <th>Category Name:</th>
+                                <td id="v_category"></td>
+                            </tr>
+                            <tr>
+                                <th>Asset Number:</th>
+                                <td id="v_asset_number"></td>
+                            </tr>
+                            <tr>
+                                <th>Serial Number:</th>
+                                <td id="v_serial_number"></td>
+                            </tr>
+                            <tr>
+                                <th>Color:</th>
+                                <td id="v_color">
+                                    <!--                                    <div id="set_color" style="width:20px ; height:20px;"></div>-->
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Quantity:</th>
+                                <td id="v_quantity"></td>
+                            </tr>
+                            <tr>
+                                <th>Purchase Date:</th>
+                                <td id="v_purchase_date"></td>
+                            </tr>
+                            <tr>
+                                <th>Purchasing Amount:</th>
+                                <td id="v_purchasing_amount"></td>
+                            </tr>
+                            <tr>
+                                <th>Warranty Upto:</th>
+                                <td id="v_warranty_upto"></td>
+                            </tr>
+                            <tr>
+                                <th>Description:</th>
+                                <td id="v_description"></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock%}
+
+
+{% block js %}
+
+<script src="../../assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="../../assets/global/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" src="../../assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
+<script src="../../assets/admin/pages/scripts/table-managed.js"></script>
+
+<script type="text/javascript">
+//$('#filter_form').validate({
+//    rules: {
+//        search_by: {
+//            required: true
+//        }
+//    },
+//    messages: {
+//        search_by: {
+//            required: "This feild is required"
+//        }
+//
+//    }
+//
+//});
+
+
+    $(document).ready(function () {
+        
+        function asset_pagination(){
+        $('#assetList').dataTable({
+            "lengthMenu": [
+                [10, 15, 20, -1],
+                [10, 15, 20, "All"] // change per page values here
+            ],
+            "columnDefs": [{// set default column settings
+                    'orderable': false,
+                    'targets': [5, 6]
+                }, {
+                    "searchable": false,
+                    "targets": [0,5, 6]
+                }],
+            "order": [
+                [0, "asc"]
+            ] // set first column as a default sort by asc
+        });
+    }
+asset_pagination();
+        TableManaged.init();
+//clear modal content on close modal
+        $('.modal').on('hidden.bs.modal', function () {
+            $(this).find('.modal-body td').text('');
+        });
+
+//view data
+        $(document).on('click', 'a.view', function (event) {
+
+            var id = $(this).attr('data-id');
+            event.preventDefault();
+//        document.getElementById("preLoader").style.width = "100%";
+            $.ajax({
+                url: '/assets/view',
+                data: {id: id},
+                type: 'GET',
+                success: function (result) {
+//                document.getElementById("preLoader").style.width = "0%";
+                    //set values
+                    
+                    var purchase = new Date(result.data.asset.purchase_date);
+                    var warranty = new Date(result.data.asset.warranty_upto);
+                    //  var warrantyD = warranty.toLocaleString('en-GB', { timeZone: 'UTC' })
+                    $("#v_name").text(result.data.asset.name);
+                    $("#v_asset_number").text(result.data.asset.asset_number);
+                    $("#v_serial_number").text(result.data.asset.serial_number);
+                    if (result.data.asset.color == "") {
+                        $("#v_color").parent().remove();
+                    } else {
+                        $("#v_color").text(result.data.asset.color);
+                    }
+
+//                $("#set_color").css("background-color", result.data.asset.color);
+
+                    $("#v_quantity").text(result.data.asset.quantity);
+                    // $("#v_purchase_date ").text(purchaseD.getUTCDay()+"/"+(purchaseD.getUTCMonth() +1)+"/"+purchase.getUTCFullYear());
+                    if (result.data.asset.purchase_date == "0001-01-01T00:00:00Z") {
+                        $("#v_purchase_date ").parent().remove();
+                    } else {
+                        $("#v_purchase_date ").text(purchase.getDate() + "/" + (purchase.getMonth() + 1) + "/" + purchase.getFullYear());
+                    }
+                    if (result.data.asset.purchasing_amount == 0) {
+                        $("#v_purchasing_amount").parent().remove();
+                    } else {
+                        $("#v_purchasing_amount").text(result.data.asset.purchasing_amount + " INR");
+                    }
+                    if (result.data.asset.warranty_upto == "0001-01-01T00:00:00Z") {
+                        $("#v_warranty_upto ").parent().remove();
+                    } else {
+                        $("#v_warranty_upto").text(warranty.getDate() + "/" + (warranty.getMonth() + 1) + "/" + warranty.getFullYear());
+                    }
+                    if (result.data.asset.description == "") {
+                        $("#v_description").parent().remove();
+                    } else {
+                        $("#v_description").text(result.data.asset.description);
+                    }
+
+                    $("#v_category").text(result.data.asset.category.name);
+
+                    //show modal
+                    $("#long").modal('show');
+                }
+            })
+        });
+
+//asset delete
+        $(document).on('click', 'a.delete', function (event) {
+            var href = $(this).attr('link');
+            event.preventDefault();
+            bootbox.confirm("Are you sure you want to delete the asset?", function (result) {
+                if (result) {
+                    window.location = href;
+                }
+
+            })
+        });
+
+
+//on delete asset
+//        $(document).on('click', 'a.delete', function (event) {
+//            var href = $(this).attr('href');
+//            event.preventDefault();
+//            bootbox.confirm("Are you sure you want to delete the asset?", function (result) {
+//                if (result) {
+////                document.getElementById("preLoader").style.width = "100%";
+//                    $.ajax({
+//                        url: href,
+//                        type: 'DELETE',
+//                        success: function (result) {
+////                            setTimeout(function () {
+////                            document.getElementById("preLoader").style.width = "0%";
+////                            window.location = '/assets'
+//
+////                            }, 4000);
+//                            window.location.reload();
+//                        }
+////                      
+//                    });
+//                }
+//            });
+//
+//        });
+
+        //on change status asset
+//    $('a.status').on('click', function (event) {
+//        var href = $(this).attr('href');
+//        var status = $(this).attr('data-status')
+//        event.preventDefault();
+//        bootbox.confirm("Are you sure you want to change the status of asset?", function (result) {
+//            if (result) {
+//                alert(href);
+//                alert(status);
+//                $.ajax({
+//                    url: href,
+//                    type: 'put',
+//                    data: {status: status},
+//                    success: function (result) {
+//                        setTimeout(function(){
+//                        window.location = '/assets'
+//                    },4000);
+//                    }
+//                });
+//            }
+//        });
+//
+//    });
+
+        //*** change the color of status circle on the basis of active /inactive**/
+
+//        function set_status_color() {
+//            $('.record').each(function () {
+//                var reference = $(this).children('.fetch_status');
+//                var statusVal = reference.find('.status').attr('data-status');
+//                if (statusVal == 0) {
+//                    reference.find('.fa-circle').css('color', 'red')
+//
+//                } else {
+//                    reference.find('.fa-circle').css('color', 'green')
+//                }
+//
+//            });
+
+
+
+            //set pagination
+//            $(".pagination-section").jPages({
+//                containerID: "asset_pagination",
+//                perPage: 10,
+//                first: "first",
+//                previous: "previous",
+//                next: "next",
+//                last: "last"
+//            });
+
+//            $('#asset_pagination').paginate({
+//            limit: 5,
+//            previous: true,
+//
+//            previousText: '<',
+//
+//            next: true,
+//            nextText: '>',
+//
+//            first: true,
+//
+//            firstText: '<<',
+//
+//            last: true,
+//
+//            lastText: '>>',
+//
+//            navigationWrapper: null,
+//
+//            navigationClass: 'page-navigation',
+//        });
+
+
+
+      //  }
+//        set_status_color();
+
+        /*************************************filter of form *********************/
+        //validate filter form
+        $('#filter_form').validate({
+            rules: {
+                field_type: {
+                    required: true
+                },
+                sort_type: {
+                    required: true
+                }
+            },
+            messages: {
+                field_type: {
+                    required: "This field is required"
+                },
+                sort_type: {
+                    required: "Sort type is required"
+                },
+
+            }
+
+        });
+
+//        //filter button click validate then send ajax
+        $(document).on('click', '#filter', function (e) {
+            e.preventDefault();
+            if ($('#filter_form').valid()) {
+                var form_data = $('#filter_form').serialize();
+                
+                $.ajax({
+                    url: '/assets/filter',
+                    data: form_data,
+                    type: 'POST',
+                    success: function (result) {
+                        console.log(result);
+                        $("#ajaxResponce").html(result);
+                asset_pagination();
+
+                    }
+
+                })
+            }
+        });
+//
+//        //make sort type field required on change of sort field
+        $(document).on('change', "#field_type", function () {
+            $('#sort_type').attr('required', true)
+        });
+//
+//
+//        //reset click for filter
+        $(document).on('click', '#reset', function (e) {
+            e.preventDefault();
+            $("#search_by").val('');
+            $("#field_type").val('');
+            $("#sort_type ").val('');
+
+            $.ajax({
+                url: '/assets/filter',
+                type: 'POST',
+                success: function (result) {
+                    console.log(result);
+                    $("#ajaxResponce").html(result);
+                    asset_pagination();
+
+                }
+
+            })
+
+        });
+//        $('.custom_pagination').paginate({
+//
+//            // how many items per page
+//            perPage: 7,
+//
+//            // scroll to top of the container if an user clicks on a pagination link
+////            auto < a href = "https://www.jqueryscript.net/tags.php?/Scroll/" > Scroll < /a>:     true,     
+//
+//                    // which elements to target 
+//                    scope: '',
+//
+//            // where the pagination will be displayed
+//            paginatePosition: ['bottom'],
+//
+//            // custom html tags for the pagination
+////            containerTag: 'nav',
+//            paginationTag: 'tbody',
+//            itemTag: 'tr',
+////            linkTag: 'a',
+//
+//            // use hash locations
+//            useHashLocation: true,
+//
+//            // triggered when a pagination link is clicked
+//            onPageClick: function () {}
+//
+//        });
+
+
+//
+      //  ComponentsPickers.init();
+       // UIAlertDialogApi.init();
+
+    });
+</script>
+
+
+{%endblock%}

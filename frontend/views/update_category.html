@@ -1,0 +1,93 @@
+{% extends "./layout.html" %}
+
+{% block css %}
+{% endblock%}
+
+
+{% block content %}
+<div class="page-content">
+    <!-- BEGIN PAGE HEADER-->
+    <h3 class="page-title">
+        Edit Category Details
+    </h3>
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="/add_asset">Edit Category</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row"><br/></div>
+    <!-- END PAGE HEADER-->
+    <div class="portlet-body form">
+
+        <!-- BEGIN FORM-->
+        <form method="post" action="/manage_category/update/{{category.Key}}" id="update_category" class="horizontal-form" >
+            <div class="form-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label for= "name" class="control-label">Category Name:</label>
+                        <span class="star">*</span>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Laptop" value="{{category.Record.name}}" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="description" class="control-label">Category Description:</label>
+                        <span class="star">*</span>
+                        <textarea class="form-control" name="description" id="description"  rows="3">{{category.Record.description}}</textarea>
+                    </div>
+                </div>
+                <div class="form-group form-md-radios">
+                    <label>Status</label>
+                    <input type="hidden" id="fetch_status" class="form-control"  value="{{category.Record.status}}">
+                    <div class="md-radio-inline">
+
+                        <div class="md-radio">
+                            <input type="radio" id="active" name="status" class="md-radiobtn" value="1">
+                            <label for="active">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span>
+                                Active </label>
+                        </div> 
+                        <div class="md-radio">
+                            <input type="radio" id="inactive" name="status" class="md-radiobtn" value="0" >
+                            <label for="inactive">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span>
+                                Inactive </label>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-actions right">
+                    <a class="btn red" href="/manage_category">Cancle</a>
+                    <button type="submit" id="update_category" class="btn blue"><i class="fa fa-check"></i> Update</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock%}
+
+
+{% block js %}
+<script>
+    $(document).ready(function () {
+        var status = $("#fetch_status").val();
+        console.log(status);
+        if (status == 1) {
+            $('#active').attr('checked', true);
+        } else {
+            $('#inactive').attr('checked', true);
+        }
+
+
+    });
+</script>
+{%endblock%}

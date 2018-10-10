@@ -1,0 +1,157 @@
+{% extends "./layout.html" %}
+
+{% block css %}
+<style>
+    .block-data{
+        text-align:center;
+        font-size:18px;
+    }
+    .dashboard{
+        padding-left: 8px;
+    }
+    .more {
+        width: 25%;
+        float: left;
+    }
+    a {
+        text-shadow: none;
+        color: #444444;
+        padding: 4px;
+    }
+/*    .overlay{
+        display:block;
+    }*/
+/*    #myList a{ display:none;
+    }*/
+</style>
+
+
+
+{% endblock%}
+
+
+{% block content %}
+<div class="page-content">
+    <!-- BEGIN PAGE HEADER-->
+    <h3 class="page-title">
+        {{title}}
+    </h3>
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="/block">Manage Blocks</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row"><br/></div>
+    {% include "./flashMessage.html" %}<!--include file for flash messages -->
+    <!--    <div class="portlet-body list-category">-->
+
+    <div class=" row page " id="myList">
+
+        {% set count= block.height %}
+        {% set custom_array= Array(count) %}
+        {% for  x, y in custom_array %}
+        <!--        <div class="dashboard ">-->
+        <a class="col-sm-4 col-lg-4 col-md-4  col-xs-12" href="/block/{{x}}">
+            <div class="dashboard-stat blue-madison">
+                <div class="visual">
+                    <i class="fa fa-users"></i>
+                </div>
+                <div class="block-data">
+                    BLOCK #{{x}}
+                </div>
+            </div>
+        </a>
+        <!--    </div>-->
+
+        {% endfor %}
+
+    </div>
+    <div class="row" id="dynamic_page" style="float:right;padding-bottom: 20px;"></div>
+    
+    <!-- <div class="row pagination-section">-->
+    <div class="clearfix">
+    </div>
+</div>
+
+
+<!--                <div class="link">
+                    <a style="float: right;" class="delete" title="Delete"  href="/block/{{block.height}}">
+                        <i class="fa fa-trash-o fa-3x"></i>
+                    </a>
+                </div>-->
+
+
+
+{%endblock%}
+
+{%block js%}
+
+<script src="../../assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+<script src="../../assets/global/plugins/jquery-bootpag/jquery.bootpag.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+
+
+//    size_li = $("#myList a").size();
+//    x = 12;
+//    $('#myList a:lt(' + x + ')').show();
+//    $('#loadMore').click(function () {
+//        document.getElementById("preLoader").style.display = "block";
+//        $("#showLess").css('display', 'block');
+//        x = (x + 12 <= size_li) ? x + 12 : size_li;
+//        if (x >= size_li-13 ) {
+//            $("#loadMore").css('display', 'none')
+//        }
+//        $('#myList a:lt(' + x + ')').show();
+//        document.getElementById("preLoader").style.display = "none";
+//    });
+//    $('#showLess').click(function () {
+//document.getElementById("preLoader").style.display = "block";
+//        x = (x - 12 < 0) ? 12 : x - 12;
+////        alert(x);
+//        if (x <= 12) {
+//            $("#showLess").css('display', 'none');
+//        }
+//        $('#myList a').not(':lt(' + x + ')').hide();
+//        document.getElementById("preLoader").style.display = "none";
+//    });
+//
+//document.getElementById("preLoader").style.display = "none";
+$('#myList a').css('display','none');
+    var size = ($("#myList a").size() + 12) / 12;
+    console.log(size);
+    x = 12;
+    $('#myList a:lt(' + x + ')').show();
+    $('#dynamic_page').bootpag({
+        total: size,
+        page: 1,
+        maxVisible: 6,
+        leaps: true,
+        next: '<i class="fa fa-angle-right"></i>',
+        prev: '<i class="fa fa-angle-left"></i>',
+
+        firstLastUse: true,
+        first: "first",
+        last: "last"
+    }).on('page', function (event, num) {
+//            $("#dynamic_pager_content2").html("Page " + num + " content here"); // or some ajax content loading...
+
+        x = num * 12;
+        y = x - 12;
+        $('#myList a').hide();
+        $('#myList a:lt(' + x + ')').show();
+        $('#myList a:lt(' + y + ')').hide();
+
+
+    });
+
+});
+</script>
+
+
+
+{%endblock%}

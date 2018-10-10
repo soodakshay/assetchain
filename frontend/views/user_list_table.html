@@ -1,0 +1,124 @@
+<!--
+<div class="table-responsive">
+    <table class="table table-bordered table-hover list" > 
+        <thead>
+            <tr>
+                <th>Sr. No.</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>User Id</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Status</th>
+                <th width="15%">Action</th>
+            </tr>
+        </thead>
+        <tbody id="user_pagination">
+            {% set serial_number = 0 %}
+            {% for user_info in users_data %}
+            <tr class="record">
+                {% set serial_number =serial_number + 1 %}                                 
+                <td class="serial_number">{{serial_number}}</td>
+                <td class="fetch_first_name capitalize">{{user_info.user.first_name}}</td>
+                <td class="fetch_last_name capitalize">{{user_info.user.last_name}}</td>
+                <td class="fetch_user_id">{{user_info.user.emp_id}}</td>
+                <td class="fetch_email">{{user_info.user.email}}</td>
+                <td class="fetch_phone_number">{{user_info.user.phone_number}}</td>
+                <td class="fetch_status">
+                    <a class="btn btn-circle btn-icon-only btn-default status" data-status="{{user_info.user.status}}" title="status" link="/users/{{user_info.id}}">
+                        <i class="fa fa-circle" ></i>
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-circle btn-icon-only btn-default view"  title="view" data-id="{{user_info.id}}" ><i style="color:green" class="fa fa-eye"></i></a>    
+                    <a class="btn btn-circle btn-icon-only btn-default delete" title="delete" link="/users/delete/{{user_info.id}}"><i style="color:red" class="fa fa-trash" ></i></a>
+
+                </td>
+            </tr>
+            {%endfor%}
+            {% if !users_data.length %}
+            <tr><td colspan="8">There is no data</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+<div class="text-center">
+
+</div><br><br> -->
+
+
+<div class="row">
+    <div class="col-md-12">
+
+        <!--        <div class="portlet-body">-->
+
+        <div id="sample_1_wrapper" class="dataTables_wrapper no-footer"><div class="table-scrollable"><table class="table table-striped table-bordered table-hover dataTable no-footer" id="userList" role="grid" aria-describedby="sample_1_info">
+                    <thead>
+                        <tr role="row">
+
+                            <th>Sr. No.</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>User Id</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Status</th>
+                            <th width="15%">Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                        {% set serial_number = 0 %}
+                        {% for user_info in users_data %}
+                        <tr class="record">
+                            {% set serial_number =serial_number + 1 %}                                 
+                            <td class="serial_number">{{serial_number}}</td>
+                            <td class="fetch_first_name capitalize">{{user_info.user.first_name}}</td>
+                            <td class="fetch_last_name capitalize">{{user_info.user.last_name}}</td>
+                            <td class="fetch_user_id">{{user_info.user.emp_id}}</td>
+                            <td class="fetch_email">{{user_info.user.email}}</td>
+                            <td class="fetch_phone_number">{{user_info.user.phone_number}}</td>
+                            <td class="fetch_status">
+                                {% if user_info.user.status == 0%}
+                                <a class="btn btn-circle btn-icon-only btn-default status" data-status="{{user_info.user.status}}" title="status" link="/users/{{user_info.id}}">
+                                        <i class="fa fa-circle" style= "color:red;"></i>
+                                    </a>
+                                    {% else %}
+                                    <a class="btn btn-circle btn-icon-only btn-default status" data-status="{{user_info.user.status}}" title="status" link="/users/{{user_info.id}}">
+                                        <i class="fa fa-circle" style= "color:green;"></i>
+                                    </a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a class="btn btn-circle btn-icon-only btn-default view"  title="view" data-id="{{user_info.id}}" ><i style="color:green" class="fa fa-eye"></i></a>    
+                                    <a class="btn btn-circle btn-icon-only btn-default delete" title="delete" link="/users/delete/{{user_info.id}}"><i style="color:red" class="fa fa-trash" ></i></a>
+
+                                </td>
+                            </tr>
+                            {%endfor%}
+                            {% if !users_data.length %}
+                            <tr><td colspan="8">There is no data</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table></div></div>
+            <!--        </div>-->
+            <!--        </div>-->
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

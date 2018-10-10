@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!--<![endif]-->
+    <!-- BEGIN HEAD -->
+    <head>
+        <meta charset="utf-8"/>
+        <title>Bottle Driver</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta content="" name="description"/>
+        <meta content="" name="author"/>
+        <!-- BEGIN GLOBAL MANDATORY STYLES -->
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+        <!-- END GLOBAL MANDATORY STYLES -->
+        <!-- BEGIN PAGE LEVEL STYLES -->
+        <link href="../../stylesheets/error.css" rel="stylesheet" type="text/css"/>
+        <!-- END PAGE LEVEL STYLES -->
+        <!-- BEGIN THEME STYLES -->
+        <link href="../../assets/global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/global/css/plugins.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
+        <link id="style_color" href="../../assets/admin/layout/css/themes/darkblue.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
+        <!-- END THEME STYLES -->
+        <!-- FAVICON AND TOUCH ICONS -->
+        <link rel="shortcut icon" href="/images/icons/favicon.ico">
+        <link rel="apple-touch-icon" href="/images/icons/favicon.ico">
+        <link rel="icon" sizes="228x228" href="/images/icons/favicon.ico">
+    </head>
+    <body class="">
+        <div class="main">
+            <div style="height:120px; text-align:center;background-color:rgb(43,54,67)">
+                <img src="/images/logo.jpg" style="padding-top:20px" align="middle" height="100px" class="" alt="">
+            </div>
+            <div class="container" style="color: white">
+                <!-- BEGIN SIDEBAR & CONTENT -->
+                <div class="row margin-bottom-40">
+                    <!-- BEGIN CONTENT -->
+                    <div class="col-md-12 col-sm-12">
+                        <div class="content-page page-404">
+                            <div class="number">
+                                {{error.status}}
+                            </div>
+                            <div class="details" style="font-size: 18px; font-family: Times New Roman">
+                                <h2 style="font-family: Times New Roman">{{message}}</h2>{% if show_return === 1 %}Login <a href="/login" class="link">here</a>{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END CONTENT -->
+                </div>
+                <!-- END SIDEBAR & CONTENT -->
+            </div>
+        </div>
+        <![endif]-->
+        <script src="../../assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+        <script src="../../assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+        <!-- IMPORTANT! Load jquery-ui.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+        <script src="../../assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+        <script src="../../assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="../../assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+        <script src="../../assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+        <script src="../../assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+        <script src="../../assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+        <script src="../../assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+        <script src="../../assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+        <!-- END CORE PLUGINS -->
+        <script src="../../assets/global/scripts/metronic.js" type="text/javascript"></script>
+        <script src="../../assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+        <script src="../../assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
+        <script src="../../assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
+        <script>
+jQuery(document).ready(function () {
+    Metronic.init(); // init metronic core components
+    Layout.init(); // init current layout
+    QuickSidebar.init(); // init quick sidebar
+    Demo.init(); // init demo features
+});
+        </script>
+        <!-- END JAVASCRIPTS -->
+    </body>
+    <!-- END BODY -->
+</html>

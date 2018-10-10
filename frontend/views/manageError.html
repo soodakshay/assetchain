@@ -1,0 +1,32 @@
+{% extends "./layout.html" %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="../../assets/global/plugins/bootstrap-datepicker/css/datepicker3.css"/>
+
+{%endblock%}
+
+
+{% block content %}
+<div class="page-content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN BORDERED TABLE PORTLET-->
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-comment"></i>Error
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="row"><br/></div>                    
+                    {% include "./flashMessage.html" %}<!--include file for flash messages -->
+                
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+                        
+{%endblock%}

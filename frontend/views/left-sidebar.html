@@ -1,0 +1,100 @@
+<!-- BEGIN SIDEBAR -->
+<div class="page-sidebar-wrapper">
+    <div class="page-sidebar navbar-collapse collapse">
+        <ul class="page-sidebar-menu page-sidebar-menu-light " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+            <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+            <li class="sidebar-toggler-wrapper">
+                <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                <div class="sidebar-toggler blockshow">
+                </div>
+                <!-- END SIDEBAR TOGGLER BUTTON -->
+            </li>
+            <div class="row"><br/></div>
+            <li {% if dashboard_page  == "active" %} class="active" {% endif %}>
+                <a href="/dashboard" class="selected">
+                    <i class="fa fa-home"></i>
+                    <span class="title">Dashboard</span>
+                </a>
+            </li>
+
+            <li {% if manage_category == "active" %} class="active" {% endif %}>
+                <a href="/category">
+                    <i class="fa fa-cube"></i>
+                    <span class="title">Manage Category</span>
+                </a>
+            </li>
+            <li {% if manage_user == "active" %} class="active" {% endif %}>
+                <a href="/users">
+                    <i class="fa fa-users"></i>
+                    <span class="title">Manage Users</span>
+                </a>
+            </li>
+            <li {% if add_asset  == "active" || list_asset == "active" %} class="active" {% endif %}>
+                <a href="javascript:;">
+                    <i class="fa fa-cubes"></i>
+                    <span class="title">Manage Assets</span>
+                    <span {% if add_asset  == "active" || list_asset == "active" %} class="arrow open" {% else %} class="arrow" {% endif %}></span>
+                </a>
+                <ul class="sub-menu">
+                    <li {% if add_asset  == "active" %} class="active" {% endif %}>
+                        <a href="/assets/add">
+                            <i class="fa fa-cube"></i>
+                            <span class="title">Add New Assets</span>
+                        </a>
+                    </li>
+                    <li {% if list_asset == "active" %} class="active" {% endif %}>
+                        <a href="/assets">
+                            <i class="fa fa-file-text-o"></i>
+                            <span class="title">All Assets</span>
+                        </a>
+                    </li>
+                    <!--<li {% if active == "templatepage" %} class="active" {% endif %}>
+                        <a href="/emailTemplate">
+                            <i class="fa fa-share-square"></i>
+                            <span class="title">Assign Assets</span>
+                        </a>
+                    </li>
+                    <li {% if active == "templatepage" %} class="active" {% endif %}>
+                        <a href="/emailTemplate">
+                            <i class="fa fa-trash-o"></i>
+                            <span class="title">Disposed Assets</span>
+                        </a>
+                    </li>-->
+                </ul>	
+            </li>
+            <li {% if manage_request == "active" %} class="active" {% endif %}>
+                <a href="/requests">
+                    <i class="fa  fa-comments"></i>
+                    <span class="title">Manage Requests  </span><span id="asset_request_count"></span>
+                </a>
+            </li>
+            <li {% if block_height == "active" %} class="active" {% endif %}>
+                <a href="/block">
+                    <i class="fa  fa-list-alt"></i>
+                    <span class="title">Block Info</span>
+                </a>
+            </li>
+            <div class="blocks-new">
+
+                <span class="header-textblock">Blocks</span>
+                <div class=" fullrowfrblocks">
+
+<!--                    <div id="block1" class="col-md-4 col-xs-12"><a class="blockvalueinner">block1</a></div>
+                    <div id="block2" class="col-md-4 col-xs-12"><a class="blockvalueinner">block2</a></div>
+                    <div id="block3" class="col-md-4 col-xs-12"><a class="blockvalueinner">block3</a></div>-->
+                </div>
+<!--                <div class="fullrowfrblocks">
+                    <div id="block4" class="col-md-4 col-xs-12"><a class="blockvalueinner">block4</a></div>
+                    <div id="block5" class="col-md-4 col-xs-12"><a class="blockvalueinner">block5</a></div>
+                    <div id="block6" class="col-md-4 col-xs-12"><a class="blockvalueinner">block6</a></div>
+                </div>-->
+            </div>
+<!--            <div> <button id ="special_effect">Start Animation</button></div>-->
+        </ul>
+        <!-- END SIDEBAR MENU -->
+    </div>
+</div>
+<!-- END SIDEBAR -->
+<style>
+  
+</style>

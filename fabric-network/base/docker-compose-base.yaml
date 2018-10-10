@@ -1,0 +1,120 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  # zookeeper:
+  #   image: hyperledger/fabric-zookeeper
+  #   restart: always
+  #   ports:
+  #     - 2181
+  #     - 2888
+  #     - 3888
+  #   networks:
+  #     - net
+
+  # kafka:
+  #   image: hyperledger/fabric-kafka
+  #   restart: always
+  #   environment:
+  #     - KAFKA_MESSAGE_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+  #     - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+  #     - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+  #   ports:
+  #     - 9092
+  #   networks:
+  #     - net
+
+  orderer0.debutinfotech.com:
+    container_name: orderer0.debutinfotech.com
+    image: hyperledger/fabric-orderer:$IMAGE_TAG
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=DEBUG
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=debutOrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=false
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ../crypto-config/ordererOrganizations/debutinfotech.com/orderers/orderer0.debutinfotech.com/msp:/var/hyperledger/orderer/msp
+    - ../crypto-config/ordererOrganizations/debutinfotech.com/orderers/orderer0.debutinfotech.com/tls/:/var/hyperledger/orderer/tls
+    - orderer0.debutinfotech.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+  
+  orderer1.debutinfotech.com:
+    container_name: orderer1.debutinfotech.com
+    image: hyperledger/fabric-orderer:$IMAGE_TAG
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=debutOrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      # - ORDERER_GENERAL_TLS_ENABLED=true
+      # - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      # - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      # - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ../crypto-config/ordererOrganizations/debutinfotech.com/orderers/orderer1.debutinfotech.com/msp:/var/hyperledger/orderer/msp
+    - ../crypto-config/ordererOrganizations/debutinfotech.com/orderers/orderer1.debutinfotech.com/tls/:/var/hyperledger/orderer/tls
+    - orderer1.debutinfotech.com:/var/hyperledger/production/orderer
+    ports:
+      - 7049:7050
+
+  peer0.debutinfotech.com:
+    container_name: peer0.debutinfotech.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.debutinfotech.com
+      - CORE_PEER_ADDRESS=peer0.debutinfotech.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.debutinfotech.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.debutinfotech.com:7051
+      - CORE_PEER_LOCALMSPID=debutMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/debutinfotech.com/peers/peer0.debutinfotech.com/msp:/etc/hyperledger/fabric/msp
+        #- ../crypto-config/peerOrganizations/debutinfotech.com/peers/peer0.debutinfotech.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.debutinfotech.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
+      - 7053:7053
+
+  peer1.debutinfotech.com:
+    container_name: peer1.debutinfotech.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.debutinfotech.com
+      - CORE_PEER_ADDRESS=peer1.debutinfotech.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.debutinfotech.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.debutinfotech.com:7051
+      - CORE_PEER_LOCALMSPID=debutMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/debutinfotech.com/peers/peer1.debutinfotech.com/msp:/etc/hyperledger/fabric/msp
+        #- ../crypto-config/peerOrganizations/debutinfotech.com/peers/peer1.debutinfotech.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.debutinfotech.com:/var/hyperledger/production
+    ports:
+      - 8051:7051
+      - 8053:7053

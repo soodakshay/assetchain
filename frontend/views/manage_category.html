@@ -1,0 +1,184 @@
+{% extends "./layout.html" %}
+
+{% block css %}
+<link href="../../assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+
+
+<style>
+
+    .view td,th{
+        text-align: left
+    }
+
+    .desc{
+        font-size:20px;
+    }
+    .astyle{
+        color:#FFF
+    }
+    .more .astyle:hover {
+        color: #1e1e1e;
+    }
+    .dashboard-stat .details {
+        position: relative;
+        padding: 15px;
+
+    }
+    .dashboard-stat .details .desc {
+        text-align: center;
+
+    }
+    dashboard-stat.green-haze .visual > i {
+        z-index: 0;
+    }
+    .placetext{
+        text-align: center;
+        color:white;
+        font-size:11px;
+    }
+    /*     .overlay{
+            display:block;
+        }
+        #category_pagination > div{
+            display:none;
+        }*/
+</style>
+
+
+{% endblock%}
+
+
+{% block content %}
+<div class="page-content">
+    {% include "./flashMessage.html" %}<!--include file for flash messages -->
+    <!-- BEGIN PAGE HEADER-->
+    <h3 class="page-title">
+        {{title}}
+    </h3>
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="/category">Manage Category</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row"><br/></div>
+
+    <!--    <div class="portlet-body list-category">-->
+    <!--div for paging-->
+
+    <div class="row page" id="category_pagination">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="dashboard-stat purple-plum manage_pagination">
+                <div class="visual">
+                    <i class="fa fa-comments"></i>
+                </div>
+                <div class="details">
+                    <div class="desc">
+                        Create New Category
+                    </div>
+                </div>
+                <a class="more" href="category/add">
+                    <i class="fa fa-plus-circle fa-3x"></i>
+                </a>
+            </div>
+        </div>
+        {%for category in categories %}
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
+            {% if category.Record.status == 0 %}
+            <div class="dashboard-stat red-intense manage_pagination">            
+                {% else %}
+                <div class="dashboard-stat green-haze manage_pagination">
+                    {% endif %}
+                    <div class="visual">
+                        <i class="fa fa-comments"></i>
+                    </div>
+                    <div class="details">
+                        <div class="desc">{{category.Record.name}}</div>
+                        {% if category.Record.status == 0 %}
+                        <div class="placetext"> Inactive</div>
+                        {% else %}
+                        <div class="placetext"> Active</div>
+                        {% endif %}
+
+                    </div>
+                    <div class="more">
+                        <a class="astyle" style="float: left;"  title="Edit"  href="category/update/{{category.Key}}">
+                            <i class="fa fa-pencil-square-o fa-3x"></i>
+                        </a>          
+                        <a class="astyle delete" style="float: right;"  title="Delete"  href="/category/delete/{{category.Key}}">
+                            <i class="fa fa-trash-o fa-3x"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+
+
+        </div>
+        <!--    <div class="row pagination-section"></div>-->
+        <div class="row dynamic_page"  style="float:right;padding-bottom: 20px;"></div>
+        <div class="clearfix">
+        </div>
+    </div>
+
+    {%endblock%}
+
+    {%block js%}
+
+    <script src="../../assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+    <script src="../../assets/global/plugins/jquery-bootpag/jquery.bootpag.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+
+    //    document.getElementById("preLoader").style.display = "none";
+        $("#category_pagination > div").css('display', 'none');
+        var size = ($("#category_pagination > div").size() + 12) / 12;
+        console.log(size);
+        x = 12;
+        $('#category_pagination > div:lt(' + x + ')').show();
+        $('.dynamic_page').bootpag({
+            total: size,
+            page: 1,
+            maxVisible: 6,
+            leaps: true,
+            next: '<i class="fa fa-angle-right"></i>',
+            prev: '<i class="fa fa-angle-left"></i>',
+
+            firstLastUse: true,
+            first: "first",
+            last: "last"
+        }).on('page', function (event, num) {
+    //            $("#dynamic_pager_content2").html("Page " + num + " content here"); // or some ajax content loading...
+
+            x = num * 12;
+            y = x - 12;
+            $('#category_pagination > div').hide();
+            $('#category_pagination > div:lt(' + x + ')').show();
+            $('#category_pagination > div:lt(' + y + ')').hide();
+
+
+        });
+
+  
+
+    //******on delete  category
+        $('a.delete').on('click', function (event) {
+            var href = $(this).attr('href');
+            event.preventDefault();
+            bootbox.confirm("Are you sure you want to delete the category?", function (result) {
+                if (result) {
+                    window.location = href;
+                }
+
+            });
+        });
+
+
+    });
+    </script>
+
+    {%endblock%}

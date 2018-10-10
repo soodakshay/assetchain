@@ -1,0 +1,107 @@
+{% extends "./layout.html" %}
+
+{% block content %}
+
+<div class="page-content">
+    <!-- BEGIN PAGE HEADER-->
+    <h3 class="page-title">
+        DashBoard
+    </h3>
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="/dashboard">Dashboard</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row"><br/></div>
+    {% include "./flashMessage.html" %}<!--include file for flash messages -->
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN DASHBOARD STATS -->
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="more" href="/assets">
+                <div class="dashboard-stat blue-madison">
+                    <div class="visual">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="details">
+                        <div class="number">
+                            <b>{{dashboard.assets}}</b>
+                        </div>
+                        <div class="desc">
+                            Total Assets
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="more" href="/users">
+                <div class="dashboard-stat red-intense">
+                    <div class="visual">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="details">
+                        <div class="number">
+                            <b>{{dashboard.user}}</b>
+                        </div>
+                        <div class="desc">
+                            Active Users
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="more" href="/category">
+                <div class="dashboard-stat green-haze">
+                    <div class="visual">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="details">
+                        <div class="number">
+                            <b>{{dashboard.category}}</b>
+                        </div>
+                        <div class="desc">
+                            Active Category
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="more" href="/requests">
+                <div class="dashboard-stat purple-plum">
+                    <div class="visual">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="details">
+                        <div class="number">
+                            <b>{{dashboard.request}}</b>
+                        </div>
+                        <div class="desc">
+                            Open Requests 
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- END DASHBOARD STATS -->
+{% endblock %}
+
+
+<!--
+Javascript Block Begins
+-->
+{% block js %}
+
+{% endblock %}
+
+<!--
+Javascript Block Ends
+-->
+

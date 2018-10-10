@@ -1,0 +1,221 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer0.debutinfotech.com:
+  orderer1.debutinfotech.com:
+  peer0.debutinfotech.com:
+  peer1.debutinfotech.com:
+  ca.debutinfotech.com:  
+  cli:
+
+networks:
+  net:
+
+services:
+
+  # zookeeper0:
+  #   container_name: zookeeper0
+  #   extends:
+  #     file: base/docker-compose-base.yaml
+  #     service: zookeeper
+  #   environment:
+  #     - ZOO_MY_ID=1
+  #     - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+
+  # zookeeper1:
+  #   container_name: zookeeper1
+  #   extends:
+  #     file: base/docker-compose-base.yaml
+  #     service: zookeeper
+  #   environment:
+  #     - ZOO_MY_ID=2
+  #     - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+
+  # zookeeper2:
+  #   container_name: zookeeper2
+  #   extends:
+  #     file: base/docker-compose-base.yaml
+  #     service: zookeeper
+  #   environment:
+  #     - ZOO_MY_ID=3
+  #     - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+    
+
+  # kafka0:
+  #   container_name: kafka0
+  #   extends:
+  #     file: base/docker-compose-base.yaml
+  #     service: kafka
+  #   environment:
+  #     - KAFKA_BROKER_ID=0
+  #     - KAFKA_MIN_INSYNC_REPLICAS=2
+  #     - KAFKA_DEFAULT_REPLICATION_FACTOR=4
+  #     - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181, zookeeper1:2181,zookeeper2:2181
+  #   depends_on:
+  #     - zookeeper0
+  #     - zookeeper1
+  #     - zookeeper2
+
+  # kafka1:
+  #   container_name: kafka1
+  #   extends:
+  #     file: base/docker-compose-base.yaml
+  #     service: kafka
+  #   environment:
+  #     - KAFKA_BROKER_ID=1
+  #     - KAFKA_MIN_INSYNC_REPLICAS=2
+  #     - KAFKA_DEFAULT_REPLICATION_FACTOR=4
+  #     - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181, zookeeper1:2181,zookeeper2:2181
+  #   depends_on:
+  #     - zookeeper0
+  #     - zookeeper1
+  #     - zookeeper2
+
+  # kafka2:
+  #   container_name: kafka2
+  #   extends:
+  #     file: base/docker-compose-base.yaml
+  #     service: kafka
+  #   environment:
+  #     - KAFKA_BROKER_ID=2
+  #     - KAFKA_MIN_INSYNC_REPLICAS=2
+  #     - KAFKA_DEFAULT_REPLICATION_FACTOR=4
+  #     - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+  #   depends_on:
+  #     - zookeeper0
+  #     - zookeeper1
+  #     - zookeeper2
+
+  # kafka3:
+  #   container_name: kafka3
+  #   extends:
+  #     file: base/docker-compose-base.yaml
+  #     service: kafka
+  #   environment:
+  #     - KAFKA_BROKER_ID=3
+  #     - KAFKA_MIN_INSYNC_REPLICAS=2
+  #     - KAFKA_DEFAULT_REPLICATION_FACTOR=4
+  #     - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+  #   depends_on:
+  #     - zookeeper0
+  #     - zookeeper1
+  #     - zookeeper2
+
+  ca.debutinfotech.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.debutinfotech.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.debutinfotech.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/8a2a90bc3140ed2f9f59a71da4a0bbd66df74b989c27643c055b0d7a4915ef00_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:ca@4321 -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/debutinfotech.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.debutinfotech.com
+    networks:
+      - net
+
+  couchdb:
+    container_name: couchdb
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=debutinfotech
+      - COUCHDB_PASSWORD=couchdb@4321
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "5990:5984"
+    networks:
+      - net
+
+  orderer0.debutinfotech.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer0.debutinfotech.com
+    container_name: orderer0.debutinfotech.com
+    #depends_on:
+      # - zookeeper0
+      # - zookeeper1
+      # - zookeeper2
+    networks:
+      - net
+
+  orderer1.debutinfotech.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer1.debutinfotech.com
+    container_name: orderer1.debutinfotech.com
+    #depends_on:
+      # - zookeeper0
+      # - zookeeper1
+      # - zookeeper2
+    networks:
+      - net
+
+  peer0.debutinfotech.com:
+    container_name: peer0.debutinfotech.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.debutinfotech.com
+    networks:
+      - net
+    depends_on:
+      - orderer0.debutinfotech.com
+      - orderer1.debutinfotech.com
+      - couchdb
+
+  peer1.debutinfotech.com:
+    container_name: peer1.debutinfotech.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.debutinfotech.com
+    networks:
+      - net
+    depends_on:
+      - orderer0.debutinfotech.com
+      - orderer1.debutinfotech.com
+      - couchdb
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LOGGING_LEVEL=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.debutinfotech.com:7051
+      - CORE_PEER_LOCALMSPID=debutMSP
+      - CORE_PEER_TLS_ENABLED=false
+      # - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/debutinfotech.com/peers/peer0.debutinfotech.com/tls/server.crt
+      # - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/debutinfotech.com/peers/peer0.debutinfotech.com/tls/server.key
+      # - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/debutinfotech.com/peers/peer0.debutinfotech.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/debutinfotech.com/users/Admin@debutinfotech.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - /root/go_workspace/assetchain/src/github.com/:/opt/gopath/src/github.com
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./after.sh:/opt/gopath/src/github.com/hyperledger/fabric/peer/after.sh
+        - ./upChaincode.sh:/opt/gopath/src/github.com/hyperledger/fabric/peer/upChaincode.sh
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer0.debutinfotech.com
+      - orderer1.debutinfotech.com
+      - peer0.debutinfotech.com
+      - peer1.debutinfotech.com
+    networks:
+      - net

@@ -1,0 +1,389 @@
+{% extends "./layout.html" %}
+
+{% block css %}
+
+<style>
+
+    .view #content td{
+        text-align: left !important
+    }
+    .view #content th{
+        text-align: left !important
+    }
+    .list th,td{
+        text-align: center !important
+    }
+</style>
+
+<!-- END PAGE LEVEL STYLES -->
+<link rel="stylesheet" type="text/css" href="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css"/>
+{%endblock%}
+
+
+{% block content %}
+<div class="page-content">
+
+    <div class="row">
+        {% include "./flashMessage.html" %}
+        <!--                        include file for flash messages -->
+        <div class="col-md-12">
+            <!--                 BEGIN BORDERED TABLE PORTLET-->
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>Manage Users
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row"><br/></div>   
+
+                    <!--                        search panel on the top --start---->
+                    <form id="filter_form">
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-5 form-group">
+                                    <label class="control-label"><b>Search By </b></label>
+                                    <input id="search_by" class="form-control searchList" type="text" name="search_by" autocomplete="off" placeholder="first Name or last name or email" >                
+                                </div>
+                                <div class="col-md-3 form-group">
+                                    <label class="control-label"><b>Sort By</b></label>
+                                    <select id="field_type" class="form-control" name="field_type" >
+                                        <option value="">--Select--</option>
+                                        <option value="0">First name</option>
+                                        <option value="1">Last_name</option>
+                                        <option value="2">Email</option>
+                                    </select>	
+                                </div>
+                                <div id="sort_type_error" class="col-md-3 form-group" >
+                                    <label class="control-label"><b>Sort Type</b></label>
+                                    <select id="sort_type" class="form-control" name="sort_type"  >
+                                        <option value="">--Select--</option>
+                                        <option value="1">Ascending</option>
+                                        <option value="-1">Descending</option>
+                                    </select>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 form-group text-center">
+                                <button id="filter" class="btn btn-primary btn-danger btn-sm" type="button" title="Filter" >Filter</button>
+                                <button id = "reset" class="btn btn-primary btn-primary btn-sm clear_form" type="button" title="Reset">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!--                        search panel on the top --ends---->
+                    <div id="ajaxResponce" >  
+                        <!--                            To show Ajax Responce -->
+
+                        {% include "user_list_table.html" %}
+                    </div>
+
+
+                </div>
+            </div>
+            <!--                 END BORDERED TABLE PORTLET-->
+            <!--            <div class="row pagination-section"></div>-->
+        </div>
+
+    </div>
+</div>
+<!-- enter the data in model-->
+<div id="long" class="modal fade modal-scroll" tabindex="-1" data-replace="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Users Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="scroller" style="height:300px" data-always-visible="1" data-rail-visible1="1">
+                    <table class="table table-bordered table-hover view">
+                        <tbody id="content">
+                            <tr>
+                                <th>First Name:</th>
+                                <td id="first_name"></td>
+                            </tr>
+                            <tr>
+                                <th>Last Name:</th>
+                                <td id="last_name"></td>
+                            </tr>
+                            <tr>
+                                <th>User Id:</th>
+                                <td id="user_id"></td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td id="email"></td>
+                            </tr>
+                            <tr>
+                                <th>Phone Number:</th>
+                                <td id="phone_number"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}
+{% block js%}
+<script src="../../assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="../../assets/global/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" src="../../assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
+<script src="../../assets/admin/pages/scripts/table-managed.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        function table_pagination() {
+
+            $('#userList').dataTable({
+                "lengthMenu": [
+                    [10, 15, 20, -1],
+                    [10, 15, 20, "All"] // change per page values here
+                ],
+                "columnDefs": [{// set default column settings
+                        'orderable': false,
+                        'targets': [4, 5, 6, 7]
+                    }, {
+                        "searchable": false,
+                        "targets": [0, 5, 6, 7]
+                    }],
+                "order": [
+                    [0, "asc"]
+                ] // set first column as a default sort by asc
+            });
+        }
+
+        table_pagination();
+
+
+//     //clear modal content on close modal
+        $('.modal').on('hidden.bs.modal', function () {
+            $(this).find('.modal-body td').text('');
+        });
+
+//view data
+        $(document).on('click', 'a.view', function (event) {
+
+            var id = $(this).attr('data-id');
+            event.preventDefault();
+//        document.getElementById("preLoader").style.width = "100%";
+            $.ajax({
+                url: '/users/view',
+                data: {id: id},
+                type: 'GET',
+                success: function (result) {
+//                    document.getElementById("preLoader").style.width = "0%";
+                    //set values
+              
+                    $("#first_name").text(result.data.first_name);
+                    $("#last_name").text(result.data.last_name);
+                    $("#user_id").text(result.data.emp_id);
+                    $("#email").text(result.data.email);
+                    $("#phone_number").text(result.data.phone_number);
+                    //show modal
+                    $('#long').modal('show');
+                }
+            })
+        })
+
+
+//on delete  user
+        $(document).on('click', 'a.delete', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('link');
+            bootbox.confirm("Are you sure you want to delete the user?", function (result) {
+                if (result) {
+                    console.log("result");
+                    window.location = href;
+                }
+            });
+        });
+
+        //on delete  user
+//        $(document).on('click', 'a.delete', function (event) {
+//            var href = $(this).attr('href');
+//            event.preventDefault();
+//            bootbox.confirm("Are you sure you want to delete the user?", function (result) {
+//                if (result) {
+////                document.getElementById("preLoader").style.width = "100%";
+//                    $.ajax({
+//                        url: href,
+//                        type: 'DELETE',
+//                        success: function (result) {
+////                            if(result.message){
+////                                alert(result.message)
+////                            }
+//////                            setTimeout(function () {
+//////                            document.getElementById("preLoader").style.width = "0%";
+////                            else{
+//                            window.location = '/users'
+////                            }
+////                            }, 4000);
+//                        },
+//                        error: function (xhr, status, error) {
+//                            alert(xhr.status);
+//                            alert(error);
+//                        }
+//                    });
+//                }
+//            });
+//        });
+//on change user status
+        $(document).on('click', 'a.status', function (event) {
+            var href = $(this).attr('link');
+            var status = $(this).attr('data-status');
+//        alert(href);
+//        alert(status)
+            event.preventDefault();
+            bootbox.confirm("Are you sure you want to change the status?", function (result) {
+                if (result) {
+//                document.getElementById("preLoader").style.width = "100%";
+//                alert(href);
+                    $.ajax({
+                        url: href,
+                        type: 'PUT',
+                        data: {"user_status": status},
+                        success: function (result) {
+                            window.location = '/users'
+//                            console.log("result--------------------")
+//                            console.log(result)
+//                            //alert(result.message);
+//                            alertify.set('notifier', 'position', 'top-right');
+//                            alertify.error(result.message);
+//                            setTimeout(function () {
+//                            document.getElementById("preLoader").style.width = "0%";
+//                                window.location = '/users'
+//                            }, 4000);
+                        }
+
+
+                    });
+                }
+            });
+        });
+//*** change the color of status circle on the basis of active /inactive**/
+//        function set_status_color() {
+//            $('.record').each(function (i, obj) {
+//                var statusVal = $(this).children('.fetch_status').find('.status').attr('data-status');
+//                if (statusVal == 0) {
+//                    $(this).children('.fetch_status').find('.fa-circle').css('color', 'red')
+//
+//                } else {
+//                    $(this).children('.fetch_status').find('.fa-circle').css('color', 'green')
+//                }
+//
+//            });
+//            //set pagination
+////            $(".pagination-section").jPages({
+////                containerID: "user_pagination",
+////                perPage: 10,
+////                first: "first",
+////                previous: "previous",
+////                next: "next",
+////                last: "last"
+////            });
+////            $('#user_pagination').paginate({
+////                limit: 5,
+////                previous: true,
+////
+////                previousText: '<',
+////
+////                next: true,
+////                nextText: '>',
+////
+////                first: true,
+////
+////                firstText: '<<',
+////
+////                last: true,
+////
+////                lastText: '>>',
+////
+////                navigationWrapper: null,
+////
+////                navigationClass: 'page-navigation',
+////            });
+//
+//
+//        }
+        //    set_status_color();
+        /*************************************filter of form *********************/
+//validate filter form
+        $('#filter_form').validate({
+            rules: {
+                field_type: {
+                    required: true
+                },
+                sort_type: {
+                    required: true
+                }
+            },
+            messages: {
+                field_type: {
+                    required: "This field is required"
+                },
+                sort_type: {
+                    required: "Sort type is required"
+                },
+            }
+
+        });
+//filter button click validate then send ajax
+        $(document).on('click', '#filter', function (e) {
+            e.preventDefault();
+            if ($('#filter_form').valid()) {
+                var form_data = $('#filter_form').serialize();
+                console.log(form_data);
+                $.ajax({
+                    url: '/users/filter',
+                    data: form_data,
+                    type: 'POST',
+                    success: function (result) {
+                        console.log(result);
+                        $("#ajaxResponce").html(result);
+                            table_pagination();
+
+                    }
+
+                })
+            }
+        });
+//make sort type field required on change of sort field
+        $(document).on('change', "#field_type", function () {
+            $('#sort_type').attr('required', true)
+        });
+////reset click for filter
+        $(document).on('click', '#reset', function (e) {
+            e.preventDefault();
+            $("#search_by").val('');
+            $("#field_type").val('');
+            $("#sort_type").val('');
+
+            $.ajax({
+                url: '/users/filter',
+                type: 'POST',
+                success: function (result) {
+                    console.log(result);
+                    $("#ajaxResponce").html(result);
+                        table_pagination();
+
+                }
+
+            })
+
+        });
+
+
+        TableManaged.init();
+    });
+</script>
+
+
+{%endblock%}

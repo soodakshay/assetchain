@@ -1,0 +1,54 @@
+.pagination-section {
+    margin:15px 0;
+    display:block;
+}
+.pagination-section a {
+    /*    font-size:12px;
+        cursor:pointer;
+        margin:0 5px;*/
+    /*    color:#333;*/
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+.pagination-section a:hover {
+    /*    background-color:#222;
+        color:#fff;*/
+    color: #23527c;
+    background-color: #eee;
+    border-color: #ddd;
+}
+.pagination-section .active > a, .pagination-section .active > a:hover {
+    background: #eee;
+    border-color: #dddddd;
+    color: #333;
+}
+.pagination-section a.jp-previous {
+/*    margin-right:15px;*/
+}
+.pagination-section a.jp-next {
+/*    margin-left:15px;*/
+}
+
+.pagination-section a.jp-current, a.jp-current:hover {
+    color: #333;
+    font-weight: bold;
+}
+.pagination-section a.jp-disabled,a.jp-disabled:hover {
+    color:#bbb;
+   
+}
+.pagination-section a.jp-current,a.jp-current:hover,.pagination-section a.jp-disabled,a.jp-disabled:hover {
+    cursor:default;
+    background:none;
+}
+.pagination-section span {
+    margin: 0 5px;
+display:none;
+}

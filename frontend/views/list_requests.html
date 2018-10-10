@@ -1,0 +1,556 @@
+{% extends "./layout.html" %}
+
+{% block css %}
+
+<link rel="stylesheet" type="text/css" href="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css"/>
+
+<style>
+    .view  td{
+        text-align: left !important
+    }
+    .view th{
+        text-align: left !important
+    }
+    .list th,td{
+        text-align: center !important
+    }
+    .table > thead > tr > th {
+        vertical-align: top;
+
+    }
+    .fetch_asset_name{
+        text-decoration: underline;
+    }
+    #requestList{
+        width:100%;
+    }
+</style>
+
+{%endblock%}
+
+
+{% block content %}
+<div class="page-content">
+    <div class="row">
+        {% include "./flashMessage.html" %}<!--include file for flash messages -->
+        <div class="col-md-12">
+            <!-- BEGIN BORDERED TABLE PORTLET-->
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-comment"></i>Manage Requests
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="row"><br/></div>                    
+
+                    <!--                    <p>{{message |json}}</p>-->
+                    <!--search panel on the top --start---->
+                    <form id="filter_form">
+                     <input id="url"  type="hidden" name="url_request" value="/request/" >                
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <div class="col-md-5 form-group">
+                                    <label class="control-label"><b>Search By </b></label>
+                                    <input id="search_by" class="form-control searchList" type="text" name="search_by" autocomplete="off" placeholder="Employee name or employee id" >                
+                                </div>
+                                <div class="col-md-3 form-group">
+                                    <label class="control-label"><b>Sort By</b></label>
+                                    <select id="field_type" class="form-control" name="field_type" >
+                                        <option value="">--Select--</option>
+                                        <option value="0">Asset name</option>
+<!--                                        <option value="0">Employee name</option>
+                                        <option value="1">Employee id</option>-->
+                                    </select>	
+                                </div>
+                                <div id="sort_type_error" class="col-md-3 form-group" >
+                                    <label class="control-label"><b>Sort Type</b></label>
+                                    <select id="sort_type" class="form-control" name="sort_type"  >
+                                        <option value="">--Select--</option>
+                                        <option value="1">Ascending</option>
+                                        <option value="-1">Descending</option>
+                                    </select>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 form-group text-center">
+                                <button id="filter" class="btn btn-primary btn-danger btn-sm" type="button" title="Filter" >Filter</button>
+                                <button id ="reset" class="btn btn-primary btn-primary btn-sm clear_form" type="button" title="Reset">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!--search panel on the top --ends---->
+
+                    <div id="ajaxResponce"> <!-- To show Ajax Responce -->
+                        {% include "./request_list_table.html" %}
+                    </div>
+
+                </div>
+            </div>
+            <!-- END BORDERED TABLE PORTLET-->
+            <!--            <div class="row pagination-section"></div>-->
+        </div>
+
+    </div>
+</div>
+<!-- enter the data in model-->
+<div id="long" class="modal fade modal-scroll" tabindex="-1" data-replace="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Request Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="scroller" style="height:300px" data-always-visible="1" data-rail-visible1="1">
+                    <table class="table table-bordered table-hover view">
+                        <tbody id="content">
+                            <tr>
+                                <th>First Name:</th>
+                                <td id="emp_first_name"></td>
+                            </tr>
+                            <tr>
+                                <th>Last Name:</th>
+                                <td id="emp_second_name"></td>
+                            </tr>
+                            <!-- <tr>
+                                <th>Employee Id:</th>
+                                <td id="emp_id"></td>
+                            </tr> -->
+                            <tr>
+                                <th>Request Description:</th>
+                                <td id="req_desc"></td>
+                            </tr>
+                            <tr>
+                                <th>Start Timing:</th>
+                                <td id="start_time"></td>
+                            </tr>
+                            <tr>
+                                <th>End Timing:</th>
+                                <td id="end_time"></td>
+                            </tr>
+                            <tr>
+                                <th>Asset Description:</th>
+                                <td id="asset_desc"></td>
+                            </tr>
+                            <tr>
+                                <th>Asset Name:</th>
+                                <td id="asset_name"></td>
+                            </tr>
+                            <tr>
+                                <th>Request priority:</th>
+                                <td id="req_priority"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal which contains the asset details -->
+<div id="responsive" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Asset Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="scroller" style="height:300px" data-always-visible="1" data-rail-visible1="1">
+                    <table class="table table-bordered table-hover view ">
+                        <tbody>
+                            <tr>
+                                <th>Name:</th>
+                                <td id="v_name"></td>
+                            </tr>
+                            <tr>
+                                <th>Category Name:</th>
+                                <td id="v_category"></td>
+                            </tr>
+                            <tr>
+                                <th>Asset Number:</th>
+                                <td id="v_asset_number"></td>
+                            </tr>
+                            <tr>
+                                <th>Serial Number:</th>
+                                <td id="v_serial_number"></td>
+                            </tr>
+                            <tr>
+                                <th>Color:</th>
+                                <td id="v_color">
+                                    <!--                                    <div id="set_color" style="width:20px ; height:20px;"></div>-->
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Quantity:</th>
+                                <td id="v_quantity"></td>
+                            </tr>
+                            <tr>
+                                <th>Purchase Date:</th>
+                                <td id="v_purchase_date"></td>
+                            </tr>
+                            <tr>
+                                <th>Purchasing Amount:</th>
+                                <td id="v_purchasing_amount"></td>
+                            </tr>
+                            <tr>
+                                <th>Warranty Upto:</th>
+                                <td id="v_warranty_upto"></td>
+                            </tr>
+                            <tr>
+                                <th>Description:</th>
+                                <td id="v_description"></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered table-hover view ">
+                        <h4 class="modal-title">Request History</h4>
+                        <tbody id="requests">
+                            <!--put the content dynamically by jquery-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn default">Close</button>         
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
+{% block js%}
+
+
+<script src="../../assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="../../assets/global/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" src="../../assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
+<script src="../../assets/admin/pages/scripts/table-managed.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+        function request_pagination(){
+        $('#requestList').dataTable({
+            "lengthMenu": [
+                [10, 15, 20, -1],
+                [10, 15, 20, "All"] // change per page values here
+            ],
+            "columnDefs": [{// set default column settings
+                    'orderable': false,
+                    'targets': [5, 6, 7]
+                }, {
+                    "searchable": false,
+                    "targets": [0, 6, 7]
+                }],
+            "order": [
+                [0, "asc"]
+            ] // set first column as a default sort by asc
+        });
+        }
+        request_pagination();
+        
+
+        //clear modal content on close modal
+        $('.modal').on('hidden.bs.modal', function () {
+            $(this).find('.modal-body td').text('');
+        });
+
+//        
+//view data
+        $(document).on('click', 'a.view', function (event) {
+
+            var id = $(this).attr('data-id');
+//    alert(id)
+            event.preventDefault();
+//    document.getElementById("preLoader").style.width = "100%";
+            $.ajax({
+                url: '/requests/view',
+                data: {"id": id},
+                type: 'GET',
+                success: function (result) {
+//            document.getElementById("preLoader").style.width = "0%";
+                    //set values
+            
+//            alert( $.cookie("time_zone_name"));
+                    //set start time and end time format properly
+                    var timezone = $.cookie("time_zone_name");
+                    var startTimeD = moment(result.data.request.start_timing).tz(timezone).format('YYYY-MM-DD HH:mm');
+                    var endTimeD = moment(result.data.request.end_timing).tz(timezone).format('YYYY-MM-DD HH:mm');
+                    $("#emp_first_name").text(result.data.request.user.first_name);
+                    $("#emp_second_name").text(result.data.request.user.last_name);
+                    $("#emp_id").text(result.data.request.user.id);
+                    $("#req_desc").text(result.data.request.description);
+                    //$("#start_time").text(startTimeD.getDay()+"/"+startTimeD.getMonth()+"/"+startTimeD.getFullYear()+" "+startTimeD.getHours()+":"+startTimeD.getMinutes()+":"+startTimeD.getSeconds());
+                    $("#start_time").text(startTimeD);
+                    $("#end_time").text(endTimeD);
+                    $("#asset_desc").text(result.data.request.asset.description);
+                    $("#asset_name").text(result.data.request.asset.name);
+                    if (result.data.request.priority == 0) {
+                        $("#req_priority").text("Low");
+                    } else if (result.data.request.priority == 1) {
+                        $("#req_priority").text("Medium");
+                    } else if (result.data.request.priority == 2) {
+                        $("#req_priority").text("High");
+                    } else {
+                        $("#req_priority").text("not defined");
+                    }
+                    $('#long').modal('show');
+                }
+            })
+        });
+
+
+//asset details on clicking asset name set in modal
+        $(document).on('click', 'a.asset_details', function (event) {
+
+            var id = $(this).attr('data-id');
+            event.preventDefault();
+//        document.getElementById("preLoader").style.width = "100%";
+            $.ajax({
+                url: '/requests/asset_details',
+                data: {id: id},
+                type: 'GET',
+                success: function (result) {
+//                alert(result);
+//                document.getElementById("preLoader").style.width = "0%";
+                    //set values
+                    
+                    var purchase = new Date(result.asset.purchase_date);
+                    var warranty = new Date(result.asset.warranty_upto);
+                    //  var warrantyD = warranty.toLocaleString('en-GB', { timeZone: 'UTC' })
+                    $("#v_name").text(result.asset.name);
+                    $("#v_asset_number").text(result.asset.asset_number);
+                    $("#v_serial_number").text(result.asset.serial_number);
+                    $("#v_color").text(result.asset.color);
+//                    $("#set_color").css("background-color", result.asset.color);
+                    $("#v_quantity").text(result.asset.quantity);
+                    // $("#v_purchase_date ").text(purchaseD.getUTCDay()+"/"+(purchaseD.getUTCMonth() +1)+"/"+purchase.getUTCFullYear());
+                    $("#v_purchase_date ").text(purchase.getDate() + "/" + (purchase.getMonth() + 1) + "/" + purchase.getFullYear());
+                    $("#v_purchasing_amount").text(result.asset.purchasing_amount + " INR");
+                    $("#v_warranty_upto").text(warranty.getDate() + "/" + (warranty.getMonth() + 1) + "/" + warranty.getFullYear());
+                    $("#v_description").text(result.asset.description);
+                    $("#v_category").text(result.asset.category.name);
+                    let req_length = result.requests.length;
+                    var row = "";
+                    if (req_length > 0) {
+                        row += '<tr><th>Sr.No:</th><th>Requested By:</th><th>Requested From:</th><th>Requested To:</th><th>Requested On:</th><th>Priority:</th></tr>';
+                        for (let i = 0; i < req_length; i++)
+                        {
+
+                            var timezone = $.cookie("time_zone_name");
+                            var requested_from = moment(result.requests[i].value.start_timing).tz(timezone).format('YYYY-MM-DD HH:mm');
+                            var requested_to = moment(result.requests[i].value.end_timing).tz(timezone).format('YYYY-MM-DD HH:mm');
+                            var requested_on = moment(result.requests[i].value.created_at).tz(timezone).format('YYYY-MM-DD HH:mm');
+                            let sr = i + 1;
+                            var priority = "";
+                            if (result.requests[i].value.priority == "0")
+                            {
+                                priority = "Low";
+                            } else if (result.requests[i].value.priority == "1")
+                            {
+                                priority = "Medium";
+                            } else if (result.requests[i].value.priority == "2")
+                            {
+                                priority = "High";
+                            }
+                            row += '<tr><td class="sr_no." width="10%">' + sr + '</td><td class="requested_by">' + result.requests[i].value.user.first_name + '</td><td class="requested_from">' + requested_from + '</td><td class="requested_to">' + requested_to + '</td><td class="requested_on">' + requested_on + '</td><td class="priority">' + priority + '</td></tr>';
+
+                        }
+                    } else {
+                        row += "<tr><td>Request history is empty</td></tr>"
+                    }
+                    $("#requests").html(row);
+
+                    //show modal
+                    $('#responsive').modal('show');
+                }
+
+            })
+        });
+
+
+        //on delete  request
+        $(document).on('click', 'a.delete', function (event) {
+            var href = $(this).attr('href');
+            event.preventDefault();
+            bootbox.confirm("Are you sure you want to delete the request?", function (result) {
+                if (result) {
+                    window.location = href;
+                }
+            });
+        });
+
+        //on delete  request
+//        $(document).on('click', 'a.delete', function (event) {
+//            var href = $(this).attr('href');
+//            event.preventDefault();
+//            bootbox.confirm("Are you sure you want to delete the request?", function (result) {
+//                if (result) {
+////                 document.getElementById("preLoader").style.width = "100%";
+//                    $.ajax({
+//                        url: href,
+//                        type: 'DELETE',
+//                        success: function (result) {
+////                            setTimeout(function () {
+////                             document.getElementById("preLoader").style.width = "0%";
+//                                window.location = '/requests';
+////                            }, 4000);
+//                        }
+//                    });
+//                }
+//            });
+//
+//        });
+
+        //on approve and reject request
+        $(document).on('click', '.status', function (event) {
+            var asset_name = $(this).parent().parent().find(".fetch_asset_name").text();
+            var user_id = $(this).attr('data-user-id');
+            var href = $(this).attr('link');
+            var status = $(this).attr('data-status');
+            event.preventDefault();
+            bootbox.confirm("Are you sure you want to change the request status?", function (result) {
+                if (result) {
+//                 document.getElementById("preLoader").style.width = "100%";
+                    $.ajax({
+                        url: href,
+                        data: {"status": status, "asset_name": asset_name, "user_id": user_id},
+                        type: 'PUT',
+                        success: function (result) {
+
+//                            setTimeout(function () {
+//                             document.getElementById("preLoader").style.width = "0%";
+                            window.location = '/requests';
+//                            }, 4000)
+                        }
+
+                    })
+                }
+                
+
+            });
+        });
+
+        //on  handover asset request
+        $(document).on('click', '.status_request_data', function (event) {
+            var href = $(this).attr('link');
+            var id = $(this).attr('data-id');
+            var request_type = parseInt($(this).attr('request-type'), 10);
+//        alert(typeof request_type);
+            event.preventDefault();
+            bootbox.confirm("Are you sure you want to handover the asset?", function (result) {
+                if (result) {
+//                 document.getElementById("preLoader").style.width = "100%";
+                    $.ajax({
+                        url: href,
+                        data: {"id": id, "request_type": request_type},
+                        type: 'put',
+                        success: function (result) {
+                          
+
+//                            setTimeout(function () {
+//                            document.getElementById("preLoader").style.width = "0%";
+                            window.location = '/requests';
+//                            }, 4000)
+
+                        }
+
+                    });
+                }
+            });
+
+        });
+
+
+
+        /*************************************filter of form *********************/
+        //validate filter form
+        $('#filter_form').validate({
+            rules: {
+                field_type: {
+                    required: true
+                },
+                sort_type: {
+                    required: true
+                }
+            },
+            messages: {
+                field_type: {
+                    required: "This field is required"
+                },
+                sort_type: {
+                    required: "Sort type is required"
+                },
+
+            }
+
+        });
+
+        //filter button click validate then send ajax
+        $(document).on('click', '#filter', function (e) {
+            e.preventDefault();
+            if ($('#filter_form').valid()) {
+                var form_data = $('#filter_form').serialize();
+              
+                $.ajax({
+                    url: '/requests/filter',
+                    data: form_data,
+                    type: 'POST',
+                    success: function (result) {
+                        console.log(result);
+                        $("#ajaxResponce").html(result);
+                         request_pagination();
+
+                    }
+
+                })
+            }
+        });
+
+        //make sort type field required on change of sort field
+        $(document).on('change', "#field_type", function () {
+            $('#sort_type').attr('required', true)
+        });
+//
+//
+//        //reset click for filter
+        $(document).on('click', '#reset', function (e) {
+            e.preventDefault();
+            $("#search_by").val('');
+            $("#field_type").val('');
+            $("#sort_type").val('');
+
+            $.ajax({
+                url: '/requests/filter',
+                type: 'POST',
+                success: function (result) {
+                    console.log(result);
+                    $("#ajaxResponce").html(result);
+                    request_pagination();
+
+                }
+
+            })
+
+        });
+TableManaged.init();
+
+    });
+
+
+
+</script>
+
+{%endblock%}

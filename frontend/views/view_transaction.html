@@ -1,0 +1,132 @@
+{% extends "./layout.html" %}
+
+{% block css %}
+
+
+<style>
+    .set-table th,td{
+        text-align: left !important
+    }
+    #content th,td{
+        text-align: left !important;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+</style>
+
+{%endblock%}
+
+
+{% block content %}
+<div class="page-content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN BORDERED TABLE PORTLET-->
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>Total Transactions {{transaction.tx_count}} 
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row"><br/></div>   
+                    {% include "./flashMessage.html" %}<!--include file for flash messages -->      
+                    <div id="ajaxResponce"> <!-- To show Ajax Responce -->	
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover list"> 
+                                <tbody id="content">
+                                    {% if transaction.is_configuration != true %}
+
+                                    <tr>
+                                        <th width="10%">Sr. no</th>
+                                        <th width="20%">Transaction Id</th>
+                                        <th width="20%">Committed at</th>
+                                        <th width="12%">On Channel</th>
+                                        <th width="30%">Transaction Hash</th>
+                                        <th width="10%">Action</th>
+                                    </tr>
+                                    {% for  x, y in transaction.transactions %}
+                                    <tr>
+                                        <td>{{x+1}}</td>
+                                        <td class="transaction_id">{{y.tx_id}}</td>
+                                        <td class="transaction_time">{{moment_tz(y.timestamp).tz(timezone).format('YYYY-MM-DD HH:mm') }} </td>
+                                        <td class="transaction_channel capitalize">{{y.channel_id}}</td>
+                                        <td class="transaction_proposal">{{y.actions[0].proposal_hash}}</td>
+                                        <td>
+                                            <a class="btn btn-circle btn-icon-only btn-default view"  payload="{{y.actions[0].write_requests[0].value}}" data-toggle="modal" title="view"  href="#long{{x+1}}"><i style="color:green" class="fa fa-eye"></i></a>
+                                            <div id="long{{x+1}}" class="modal fade modal-scroll" tabindex="-1" data-replace="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                                        <h4 class="modal-title">Transaction Details</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="scroller" style="height:300px" data-always-visible="1" data-rail-visible1="1">
+                                                            <table class="table table-bordered table-hover view">
+                                                                <tbody  id="content">
+                                                                    <tr>
+                                                                        <th width="18%">Transaction Id:</th>
+                                                                        <td>{{y.tx_id}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th width="18%" >Committed at:</th>
+                                                                        <td >{{moment_tz(y.timestamp).tz(timezone).format('YYYY-MM-DD HH:mm') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th width="18%">On Channel :</th>
+                                                                        <td   class="capitalize">{{y.channel_id}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th width="18%">Transaction Hash :</th>
+                                                                        <td >{{y.actions[0].proposal_hash}}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th width="18%">Data:</th>
+                                                                        <td >{{y.actions[0].write_requests[0].value}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" data-dismiss="modal" class="btn">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% else %}
+                                <tr class="btn btn danger"><td colspan="3">This is network configuration transaction </td></tr>
+                                {% endif %}
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+
+                        </div><br><br> 
+                    </div>
+
+                </div>
+            </div>
+            <!-- END BORDERED TABLE PORTLET-->
+
+        </div>
+
+    </div>
+</div>
+<!-- enter the data in model-->
+
+
+{%endblock%}
+
+{% block js%}
+
+
+{%endblock%}

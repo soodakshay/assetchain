@@ -1,0 +1,92 @@
+
+.width_50_slider
+{float: left;
+ margin-left:0;
+ margin-right:10%;
+ width: 40%;
+}
+.profile-usertitle
+{
+    text-align:left;
+}
+.profile-usertitle-name
+{
+    font-weight:bold;
+    color:#332546;
+    text-transform:uppercase;
+}
+.profile-usertitle-job
+{
+    margin-top:0px;
+    font-weight:500;
+    font-size:20px;
+    color:#737171;
+}
+.margin-top-20 i
+{
+    background: #cacaca none repeat scroll 0 0;
+    border-radius: 50%;
+    display: inline-block;
+    height: 35px;
+    padding: 10px;
+    text-align: center;
+    width: 35px;
+    margin-right:5px;
+    font-size:17px;
+    line-height:15px;
+}
+.margin-top-20.profile-desc-link
+{
+    margin-right:10px;
+}
+
+.page-container-bg-solid .page-title
+{
+    font-weight:bold;
+}
+.general-item-list > .item
+{
+    width:100%;
+    display:inline-block;
+    padding:0;
+}
+.general-item-list > .item > .item-head
+{
+    float:left;
+    display:inline-block;
+}
+.general-item-list > .item > .item-body {
+    color: #96a5aa;
+    display: inline-block;
+    float:right;
+    margin-left:10px;
+    width: 60%;
+    line-height:25px;
+}
+.portlet.light .portlet-body
+{
+    padding-top:0px;
+}
+.margin-top-20 .item-details i
+{
+    height:25px;
+    line-height:0px;
+    color:#332546;
+    font-weight:500;
+}
+.portlet.light > .portlet-title {
+    min-height: 27px;
+    padding: 0;
+}
+.portlet.light > .portlet-title > .caption {
+    color: #666;
+    padding: 0;
+}
+
+ul.typeahead.dropdown-menu li.active a {
+    color: #000 !important;
+}
+
+.dropdown-menu {
+    z-index: 99999;
+}

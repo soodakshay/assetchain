@@ -1,0 +1,57 @@
+{% extends "./layout.html" %}
+
+{% block content %}
+<div class="page-content">
+    <div class="row margin-top-12">
+        <div class="col-md-12">
+            {% include "./flashMessage_Success.html" %}
+            {% include "./validationError.html" %}
+            <div class="portlet box green">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="glyphicon glyphicon-cog"></i>Settings
+                    </div>
+                </div>
+
+                <div class="portlet-body">
+                    <!-- Begin Form -->
+                    <form id="settings-form" action="/dashboard/settings/" method="post">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label"><b>Algorithm Distance(in meters)</b></label>
+                                    <span class="star">*</span>
+                                    <input type="text" name="algorithm_distance" class="form-control" value="{{response.algorithm_distance}}"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label"><b>Search Distance(in meters)</b></label>
+                                    <span class="star">*</span>
+                                    <input type="text" name="near_by" class="form-control" value="{{response.near_by}}"/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label"><b>App Version</b></label>
+                                    <span class="star">*</span>
+                                    <input type="text" name="version" maxlength=5 class="form-control" value="{{response.version}}"/>
+                                </div>
+                                <div class="form-actions">
+                                    <input type="submit"  class="btn btn-success" value="Update Settings" />
+                                    <a href="/dashboard" class="btn default"> Cancel </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END Form -->			
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+
+<!-- include developer js file -->
+<script src="/javascripts/developer.js"></script>
+{% endblock %}
+
